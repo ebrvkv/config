@@ -1,13 +1,14 @@
 package config
 
 import (
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type cnf struct {
-	Property1 string `env:"PROPERTY1" yaml:"property1"`
+	Property1 string `env:"PROPERTY1" yaml:"property1" env-required:""`
 }
 
 type testConfigStruct[T any] struct {
@@ -21,6 +22,9 @@ type testConfigStruct[T any] struct {
 
 func TestGet(t *testing.T) {
 	tests := []testConfigStruct[any]{
+		{&cnf{}, map[string]string{}, "", "value is not provided",
+			"", "check if value is required but not provided",
+		},
 		{
 			&cnf{}, map[string]string{
 				"PROPERTY1": "localhost",
